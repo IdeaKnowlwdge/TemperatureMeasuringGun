@@ -50,7 +50,7 @@
           <OutputName>STM32_TempGun_Pro</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F1xx_HAL_Driver\Inc;..\User;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device\ST\STM32F1xx\Include</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F1xx_HAL_Driver\Inc;..\User;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device\ST\STM32F1xx\Include;..\User\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -642,6 +642,13 @@
         </Group>
         <Group>
           <GroupName>Doc</GroupName>
+          <Files>
+            <File>
+              <FileName>readme.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Doc\readme.txt</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>User</GroupName>
@@ -665,6 +672,51 @@
               <FileName>system_stm32f1xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\system_stm32f1xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>Led_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Led_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>SysTick_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\SysTick_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>Usart_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Usart_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>Key_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Key_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>Beep_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Beep_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>Oled_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Oled_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>Voltage_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Voltage_Driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>MLX90614_Driver.C</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\MLX90614_Driver.C</FilePath>
             </File>
           </Files>
         </Group>

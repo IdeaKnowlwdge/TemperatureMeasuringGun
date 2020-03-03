@@ -40,6 +40,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "SysTick_Driver.h"
+#include "Usart_Driver.h"
+#include "Voltage_Driver.h"
+
+
+extern ADC_HandleTypeDef    ADC_Handle;
 
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
@@ -157,6 +163,9 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   HAL_IncTick();
+	TimingDelay_Decrement();
+	
+	
 }
 
 /******************************************************************************/
@@ -183,5 +192,32 @@ void SysTick_Handler(void)
 /**
   * @}
   */
+	
+	
+	
+void	USART1_IRQHandler(void)
+	
+{
+  uint8_t ch=0; 
+  
+	if(__HAL_UART_GET_FLAG( &UartHandle, UART_FLAG_RXNE ) != RESET)
+	{		
+    ch=( uint16_t)READ_REG(UartHandle.Instance->DR);
+    WRITE_REG(UartHandle.Instance->DR,ch); 
+ 
+	}
+}
+	
+/**
+  * @brief  This function handles ADC interrupt request.
+  * @param  None
+  * @retval None
+  */
+void ADC1_IRQHandler(void)
+{
+  HAL_ADC_IRQHandler(&ADC_Handle);
+}
+
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
