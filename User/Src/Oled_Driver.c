@@ -170,7 +170,7 @@ void OLED_Display_Off(void)
 //清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	  
 void OLED_Clear(void)  
 {  
-	u8 i,n;		    
+	uint8_t i,n;		    
 	for(i=0;i<8;i++)  
 	{  
 		OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
@@ -185,7 +185,7 @@ void OLED_Clear(void)
 //清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	  
 void OLED_DataClear(void)  
 {  
-	u8 i,n;		    
+	uint8_t i,n;		    
 	for(i=2;i<8;i++)  
 	{  
 		OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
@@ -200,7 +200,7 @@ void OLED_DataClear(void)
 
 void OLED_On(void)  
 {  
-	u8 i,n;		    
+	uint8_t i,n;		    
 	for(i=0;i<8;i++)  
 	{  
 		OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
@@ -214,7 +214,7 @@ void OLED_On(void)
 //y:0~63
 //mode:0,反白显示;1,正常显示				 
 //size:选择字体 16/12 
-void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 Char_Size)
+void OLED_ShowChar(uint8_t x,uint8_t y,uint8_t chr,uint8_t Char_Size)
 {      	
 	unsigned char c=0,i=0;	
 		c=chr-' ';//得到偏移后的值			
@@ -236,9 +236,9 @@ void OLED_ShowChar(u8 x,u8 y,u8 chr,u8 Char_Size)
 			}
 }
 //m^n函数
-u32 oled_pow(u8 m,u8 n)
+uint32_t oled_pow(uint8_t m,uint8_t n)
 {
-	u32 result=1;	 
+	uint32_t result=1;	 
 	while(n--)result*=m;    
 	return result;
 }				  
@@ -248,10 +248,10 @@ u32 oled_pow(u8 m,u8 n)
 //size:字体大小
 //mode:模式	0,填充模式;1,叠加模式
 //num:数值(0~4294967295);	 		  
-void OLED_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size2)
+void OLED_ShowNum(uint8_t x,uint8_t y,uint32_t num,uint8_t len,uint8_t size2)
 {         	
-	u8 t,temp;
-	u8 enshow=0;						   
+	uint8_t t,temp;
+	uint8_t enshow=0;						   
 	for(t=0;t<len;t++)
 	{
 		temp=(num/oled_pow(10,len-t-1))%10;
@@ -268,7 +268,7 @@ void OLED_ShowNum(u8 x,u8 y,u32 num,u8 len,u8 size2)
 	}
 } 
 //显示一个字符号串
-void OLED_ShowString(u8 x,u8 y,u8 *chr,u8 Char_Size)
+void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size)
 {
 	unsigned char j=0;
 	while (chr[j]!='\0')
@@ -285,9 +285,9 @@ void OLED_ShowString(u8 x,u8 y,u8 *chr,u8 Char_Size)
 //参数：显示的位置（x,y），y为页范围0～3，要显示的中文
 //返回：无
 //============================================================== 
-void OLED_ShowCHinese16x16(u8 x,u8 y,u8 num,u8 (*buf)[16])
+void OLED_ShowCHinese16x16(uint8_t x,uint8_t y,uint8_t num,uint8_t (*buf)[16])
 {      			    
-	u8 i;
+	uint8_t i;
 	OLED_Set_Pos(x,y);	
 	for(i=0;i<16;i++)
 	{

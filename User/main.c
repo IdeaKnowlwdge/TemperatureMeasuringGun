@@ -93,7 +93,7 @@ int main(void)
 							
 								Temperature = SMBus_ReadTemp();  //读取温度  	
 								sprintf(TempValue,"%.1f", Temperature);     //浮点型转换成字符串
-								OLED_ShowString(40,2,(u8 *)TempValue,16);   //显示温度
+								OLED_ShowString(40,2,(uint8_t *)TempValue,16);   //显示温度
 								
 								//发热分为： 低热 ：37.2～38℃；中等度热：38．1～39℃：高热：39．1～41℃； 超高热 ：41℃以上
 								//低烧预警
@@ -177,7 +177,7 @@ int main(void)
 								
 								//由于板子在电压采集的电路中加入了电阻所以加1.2V
 								sprintf(VoltageValueStr,"%.2f", (VoltageValue + 1.20));     //浮点型转换成字符串
-								OLED_ShowString(40,2,(u8 *)VoltageValueStr,16);   //显示温度
+								OLED_ShowString(40,2,(uint8_t *)VoltageValueStr,16);   //显示温度
 								
 								//低压预警
 								if(VoltageValue < 1.5)
