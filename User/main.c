@@ -181,7 +181,12 @@ int main(void)
 
 								VBAT = VoltageValue*(10 + 10)/10;
 								
+<<<<<<< HEAD
 								sprintf(VoltageValueStr,"%.2f", VBAT);     //浮点型转换成字符串
+=======
+								//由于板子在电压采集的电路中加入了电阻所以加1.2V
+								sprintf(VoltageValueStr,"%.2f", (VoltageValue + 1.20));     //浮点型转换成字符串
+>>>>>>> 380390cbc28132046e06ce284ebb75d1d04781ed
 								OLED_ShowString(40,2,(uint8_t *)VoltageValueStr,16);   //显示温度
 								
 								//低压预警
