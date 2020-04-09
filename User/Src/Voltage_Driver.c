@@ -1,6 +1,10 @@
 #include "Voltage_Driver.h"
+#include <stdio.h>
 
+#define ADC_MAX_CNT     50
 
+uint8_t AdcValueCnt = 0;
+__IO uint32_t AdcConvertedValue[ADC_MAX_CNT] = {0};
 __IO uint32_t ADC_ConvertedValue;
 DMA_HandleTypeDef DMA_Init_Handle;
 ADC_HandleTypeDef ADC_Handle;
@@ -71,10 +75,29 @@ void Voltage_Init(void)
   */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 {
-  /* 获取结果 */
-  ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle);
+    /* 获取结果 */
+    //ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle);
+    if (AdcValueCnt >= ADC_MAX_CNT)
+    {
+        AdcValueCnt = 0;
+    }
+    AdcConvertedValue[AdcValueCnt++] = HAL_ADC_GetValue(AdcHandle);
+    //printf("AdcConvertedValue[%d] = %d \r\n",AdcValueCnt-1,AdcConvertedValue[AdcValueCnt-1]);
 }
 
+void AdcFalter(void)
+{
+    uint32_t sum;
+    uint8_t  i;
+    
+    for (i = 0; i < ADC_MAX_CNT; i++)
+    {
+        sum += AdcConvertedValue[i];
+        //printf("AdcConvertedValue[%d] = %d \r\n",i,AdcConvertedValue[i]);
+    }
+    ADC_ConvertedValue = sum / ADC_MAX_CNT;
+    //printf("ADC_ConvertedValue = %d \r\n",ADC_ConvertedValue);
+}
 
 /***************************************
 **函数功能：获取采集电压值
@@ -82,11 +105,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 ****************************************/
 float Get_VoltageValue(void)
 {
-	float Value;
- //(float) ADC_ConvertedValue/4096*(float)3.3; // 读取转换的AD值
-	Value = (float)ADC_ConvertedValue * ((float)3.3 / 4096);
+    float Value;
+    
+    AdcFalter();
+//(float) ADC_ConvertedValue/4096*(float)3.3; // 读取转换的AD值
+    Value = (float)ADC_ConvertedValue * ((float)3.3 / 4096);
+    //printf("VoltageValue = %f \r\n",Value);
 
-	return Value;
+    return Value;
 }
 
 
