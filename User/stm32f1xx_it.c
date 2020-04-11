@@ -44,9 +44,6 @@
 #include "Usart_Driver.h"
 #include "Voltage_Driver.h"
 
-
-extern ADC_HandleTypeDef    ADC_Handle;
-
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
   */
@@ -218,6 +215,9 @@ void ADC1_IRQHandler(void)
     HAL_ADC_IRQHandler(&ADC_Handle);
 }
 
-
+void DMA1_Channel1_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
