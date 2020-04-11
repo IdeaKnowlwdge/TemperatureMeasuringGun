@@ -121,11 +121,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 {
     /* 获取结果 */
     //ADC_ConvertedValue = HAL_ADC_GetValue(AdcHandle);
-//    if (AdcValueCnt >= ADC_MAX_CNT)
-//    {
-//        AdcValueCnt = 0;
-//    }
-//    AdcConvertedValue[AdcValueCnt++] = HAL_ADC_GetValue(AdcHandle);
+    if (AdcValueCnt >= ADC_MAX_CNT)
+    {
+        AdcValueCnt = 0;
+    }
+    AdcConvertedValue[AdcValueCnt++] = HAL_ADC_GetValue(AdcHandle);
     //printf("AdcConvertedValue[%d] = %d \r\n",AdcValueCnt-1,AdcConvertedValue[AdcValueCnt-1]);
     HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t *)&AdcConvertedValue[0], 50);
 }
