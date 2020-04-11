@@ -12,18 +12,18 @@ TIM_HandleTypeDef htimx;
   */
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
 {
-  GPIO_InitTypeDef GPIO_InitStruct;
-  if(htim->Instance==GENERAL_TIMx)
-  {  
-    /* 定时器通道功能引脚端口时钟使能 */
-    GENERAL_TIM_GPIO_RCC_CLK_ENABLE();
+    GPIO_InitTypeDef GPIO_InitStruct;
+    if(htim->Instance==GENERAL_TIMx)
+    {
+        /* 定时器通道功能引脚端口时钟使能 */
+        GENERAL_TIM_GPIO_RCC_CLK_ENABLE();
 
-    /* 定时器通道3功能引脚IO初始化 */
-    GPIO_InitStruct.Pin = GENERAL_TIM_CH4_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(GENERAL_TIM_CH4_PORT, &GPIO_InitStruct);
-  }
+        /* 定时器通道3功能引脚IO初始化 */
+        GPIO_InitStruct.Pin = GENERAL_TIM_CH4_PIN;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+        HAL_GPIO_Init(GENERAL_TIM_CH4_PORT, &GPIO_InitStruct);
+    }
 }
 
 /**
@@ -34,33 +34,33 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
   */
 void Beep_Init(void)
 {
-  TIM_ClockConfigTypeDef sClockSourceConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
-  
-  htimx.Instance = GENERAL_TIMx;
-  htimx.Init.Prescaler = GENERAL_TIM_PRESCALER;
-  htimx.Init.Period = GENERAL_TIM_PERIOD;
-	htimx.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htimx.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
-  HAL_TIM_Base_Init(&htimx);
+    TIM_ClockConfigTypeDef sClockSourceConfig;
+    TIM_MasterConfigTypeDef sMasterConfig;
+    TIM_OC_InitTypeDef sConfigOC;
 
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  HAL_TIM_ConfigClockSource(&htimx, &sClockSourceConfig);
+    htimx.Instance = GENERAL_TIMx;
+    htimx.Init.Prescaler = GENERAL_TIM_PRESCALER;
+    htimx.Init.Period = GENERAL_TIM_PERIOD;
+    htimx.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htimx.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;
+    HAL_TIM_Base_Init(&htimx);
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  HAL_TIMEx_MasterConfigSynchronization(&htimx, &sMasterConfig);
-  
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.Pulse = 0;
-  HAL_TIM_PWM_ConfigChannel(&htimx, &sConfigOC, TIM_CHANNEL_4);
+    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+    HAL_TIM_ConfigClockSource(&htimx, &sClockSourceConfig);
 
-  HAL_TIM_MspPostInit(&htimx);
-	
-	HAL_TIM_PWM_Start(&htimx, TIM_CHANNEL_4);//通道4开始生成PWM信号
+    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    HAL_TIMEx_MasterConfigSynchronization(&htimx, &sMasterConfig);
+
+    sConfigOC.OCMode = TIM_OCMODE_PWM1;
+    sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+    sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+    sConfigOC.Pulse = 0;
+    HAL_TIM_PWM_ConfigChannel(&htimx, &sConfigOC, TIM_CHANNEL_4);
+
+    HAL_TIM_MspPostInit(&htimx);
+
+    HAL_TIM_PWM_Start(&htimx, TIM_CHANNEL_4);//通道4开始生成PWM信号
 }
 
 /**
@@ -72,15 +72,15 @@ void Beep_Init(void)
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 {
 
-  if(htim_base->Instance==GENERAL_TIMx)
-  {
-    /* 基本定时器外设时钟使能 */
-    GENERAL_TIM_RCC_CLK_ENABLE();
-    
-    /* 配置定时器中断优先级并使能 */
-    HAL_NVIC_SetPriority(GENERAL_TIM_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(GENERAL_TIM_IRQn);
-  }
+    if(htim_base->Instance==GENERAL_TIMx)
+    {
+        /* 基本定时器外设时钟使能 */
+        GENERAL_TIM_RCC_CLK_ENABLE();
+
+        /* 配置定时器中断优先级并使能 */
+        HAL_NVIC_SetPriority(GENERAL_TIM_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(GENERAL_TIM_IRQn);
+    }
 }
 
 /**
@@ -92,26 +92,26 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 {
 
-  if(htim_base->Instance==GENERAL_TIMx)
-  {
-    /* 基本定时器外设时钟禁用 */
-    GENERAL_TIM_RCC_CLK_DISABLE();
-    /* 禁用定时器中断 */
-    HAL_NVIC_DisableIRQ(GENERAL_TIM_IRQn);
-  }
-} 
+    if(htim_base->Instance==GENERAL_TIMx)
+    {
+        /* 基本定时器外设时钟禁用 */
+        GENERAL_TIM_RCC_CLK_DISABLE();
+        /* 禁用定时器中断 */
+        HAL_NVIC_DisableIRQ(GENERAL_TIM_IRQn);
+    }
+}
 
 
 /*******************************************
 **	函数名 : Beep_VoiceRegulation
-**	功  能 : 控制蜂鸣器的声音大小						
-**	参  数 : 最大值不大于200，最小值不小于0，填整数		
+**	功  能 : 控制蜂鸣器的声音大小
+**	参  数 : 最大值不大于200，最小值不小于0，填整数
 **  返回值 : 无
 ********************************************/
 void Beep_VoiceRegulation(uint8_t VoiceSize)
 {
 
-	TIM3-> CCR4 = VoiceSize;
+    TIM3-> CCR4 = VoiceSize;
 
 }
 

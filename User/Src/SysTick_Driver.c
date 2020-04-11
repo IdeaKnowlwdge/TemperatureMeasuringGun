@@ -2,7 +2,7 @@
 
 
 static __IO uint32_t TimingDelay;
- 
+
 /**
   * @brief  启动系统滴答定时器 SysTick
   * @param  无
@@ -10,28 +10,28 @@ static __IO uint32_t TimingDelay;
   */
 void SysTick_Init(void)
 {
-	/* SystemFrequency / 1000    1ms中断一次
-	 * SystemFrequency / 100000	 10us中断一次
-	 * SystemFrequency / 1000000 1us中断一次
-	 */
-	if (HAL_SYSTICK_Config(SystemCoreClock / 100000))
-	{ 
-		/* Capture error */ 
-		while (1);
-	}
+    /* SystemFrequency / 1000    1ms中断一次
+     * SystemFrequency / 100000	 10us中断一次
+     * SystemFrequency / 1000000 1us中断一次
+     */
+    if (HAL_SYSTICK_Config(SystemCoreClock / 100000))
+    {
+        /* Capture error */
+        while (1);
+    }
 }
 
 /**
   * @brief   us延时程序,10us为一个单位
-  * @param  
+  * @param
   *		@arg nTime: Delay_us( 1 ) 则实现的延时为 1 * 10us = 10us
   * @retval  无
   */
 void delay_us(__IO uint32_t nTime)
-{ 
-	TimingDelay = nTime;	
+{
+    TimingDelay = nTime;
 
-	while(TimingDelay != 0);
+    while(TimingDelay != 0);
 }
 
 /**
@@ -42,10 +42,10 @@ void delay_us(__IO uint32_t nTime)
   */
 void TimingDelay_Decrement(void)
 {
-	if (TimingDelay != 0x00)
-	{ 
-		TimingDelay--;
-	}
+    if (TimingDelay != 0x00)
+    {
+        TimingDelay--;
+    }
 }
 
 

@@ -21,7 +21,7 @@
 #define SMBUS_SCK_H()	    HAL_GPIO_WritePin(SMBUS_PORT, SMBUS_SCK,GPIO_PIN_SET)//置高电平
 #define SMBUS_SCK_L()	    HAL_GPIO_WritePin(SMBUS_PORT, SMBUS_SCK,GPIO_PIN_RESET)//置低电平
 //SDA 引脚宏定义
-#define SMBUS_SDA_H()	    HAL_GPIO_WritePin(SMBUS_PORT, SMBUS_SDA,GPIO_PIN_SET) 
+#define SMBUS_SDA_H()	    HAL_GPIO_WritePin(SMBUS_PORT, SMBUS_SDA,GPIO_PIN_SET)
 #define SMBUS_SDA_L()	    HAL_GPIO_WritePin(SMBUS_PORT, SMBUS_SDA,GPIO_PIN_RESET)
 
 //#define SMBUS_SDA_PIN()	    SMBUS_PORT->IDR & SMBUS_SDA //读取引脚电平
@@ -137,7 +137,7 @@ uint8_t SMBus_ReceiveBit(void)
 {
     uint8_t Ack_bit;
 
-	
+
     SMBUS_SDA_H();          //引脚靠外部电阻上拉，当作输入
 //  	SMBus_Delay(2);			// High Level of Clock Pulse
     SMBUS_SCK_H();			// Set SCL line
@@ -210,21 +210,21 @@ void SMBus_Delay(uint16_t time)
 *******************************************************************************/
 void SMBus_Init()
 {
-   	/* Enable SMBUS_PORT clocks */
-	GPIO_InitTypeDef GPIO_InitStruct; //声明一个结构体变量
-   
-	MLX90614_GPIO_CLK_ENABLE();//非接触温度传感器SDAL 连接PB.15,SCL连接PB.14---打开GPIOD时钟
-	
-	// 温度传感器引脚配置
-	GPIO_InitStruct.Pin = (SMBUS_SCK|SMBUS_SDA);          //非接触温度传感器SDAL 
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;        //管脚频率为50MHZ
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;          //输出模式为
-  GPIO_InitStruct.Pull  = GPIO_PULLUP;    					   //设置引脚为上拉模式
-	
-	HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);                    //初始化PB 10/11
-	
+    /* Enable SMBUS_PORT clocks */
+    GPIO_InitTypeDef GPIO_InitStruct; //声明一个结构体变量
+
+    MLX90614_GPIO_CLK_ENABLE();//非接触温度传感器SDAL 连接PB.15,SCL连接PB.14---打开GPIOD时钟
+
+    // 温度传感器引脚配置
+    GPIO_InitStruct.Pin = (SMBUS_SCK|SMBUS_SDA);          //非接触温度传感器SDAL
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;        //管脚频率为50MHZ
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;          //输出模式为
+    GPIO_InitStruct.Pull  = GPIO_PULLUP;    					   //设置引脚为上拉模式
+
+    HAL_GPIO_Init(GPIOB,&GPIO_InitStruct);                    //初始化PB 10/11
+
     SMBUS_SCK_H();
-    SMBUS_SDA_H();	  
+    SMBUS_SDA_H();
 
 }
 
@@ -249,8 +249,8 @@ uint16_t SMBus_ReadMemory(uint8_t slaveAddress, uint8_t command)
     uint8_t ErrorCounter;	// Defines the number of the attempts for communication with MLX90614
 
     ErrorCounter=0x00;				// Initialising of ErrorCounter
-	slaveAddress <<= 1;	//2-7位表示从机地址
-	
+    slaveAddress <<= 1;	//2-7位表示从机地址
+
     do
     {
 repeat:
@@ -292,7 +292,7 @@ repeat:
     }
     while(PecReg != Pec);		//If received and calculated CRC are equal go out from do-while{}
 
-	data = (DataH<<8) | DataL;	//data=DataH:DataL
+    data = (DataH<<8) | DataL;	//data=DataH:DataL
     return data;
 }
 
@@ -378,19 +378,19 @@ uint8_t PEC_Calculation(uint8_t pec[])
     return pec[0];
 }
 
- /*******************************************************************************
- * Function Name  : SMBus_ReadTemp
- * Description    : Calculate and return the temperature
- * Input          : None
- * Output         : None
- * Return         : SMBus_ReadMemory(0x00, 0x07)*0.02-273.15
+/*******************************************************************************
+* Function Name  : SMBus_ReadTemp
+* Description    : Calculate and return the temperature
+* Input          : None
+* Output         : None
+* Return         : SMBus_ReadMemory(0x00, 0x07)*0.02-273.15
 *******************************************************************************/
 float SMBus_ReadTemp(void)
-{   
-	float temp;
-	temp = SMBus_ReadMemory(SA, RAM_ACCESS|RAM_TOBJ1)*0.02-273.15;
-	//temp = SMBus_ReadMemory(0x00, 0x07)*0.02-273.15;
-	return temp;
+{
+    float temp;
+    temp = SMBus_ReadMemory(SA, RAM_ACCESS|RAM_TOBJ1)*0.02-273.15;
+    //temp = SMBus_ReadMemory(0x00, 0x07)*0.02-273.15;
+    return temp;
 }
 
 /*********************************END OF FILE*********************************/
