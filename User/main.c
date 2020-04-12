@@ -58,7 +58,8 @@ int main(void)
 	 OLED_Init();			          //初始化OLED显示屏
    Voltage_Init();          //电压采集初始化
 	 SMBus_Init();             //初始化
-	
+	  
+
 //	//启动无操作界面	
 	OLED_DrawBMP(0,0,128,8,Peacock);
 	  

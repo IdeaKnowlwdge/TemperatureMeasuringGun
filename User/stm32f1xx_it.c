@@ -218,6 +218,9 @@ void ADC1_IRQHandler(void)
   HAL_ADC_IRQHandler(&ADC_Handle);
 }
 
-
+void DMA1_Channel1_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

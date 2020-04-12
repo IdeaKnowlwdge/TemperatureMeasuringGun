@@ -1,0 +1,33 @@
+
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Libraries/STM32F1xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Libraries/CMSIS/Device/ST/STM32F1xx/Include",
+                "${workspaceFolder}/User/inc",
+                "${workspaceFolder}/User",
+                "${workspaceFolder}/Libraries/CMSIS/Include",
+                "${workspaceFolder}/Libraries/CMSIS",
+                "F://git-depot//TemperatureMeasuringGun//Libraries//STM32F1xx_HAL_Driver//Inc//Legacy",
+                "E://Visual Studio Community//VC//Tools//MSVC//14.24.28314//include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "USE_HAL_DRIVER",
+                "STM32F103xE"  
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "E:/Visual Studio Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+    
+}

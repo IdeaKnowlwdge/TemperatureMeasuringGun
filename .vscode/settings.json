@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+
+    },
+    "[cpp]":{
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": true,
+            "strings": true
+        }
+    },
+    "[c]":{
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": true,
+            "strings": true
+        }
+    },
+    "files.autoGuessEncoding": true,
+}
