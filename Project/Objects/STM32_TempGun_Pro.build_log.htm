@@ -22,15 +22,27 @@ Dialog DLL:      TARMSTM.DLL V1.64.0.0
  
 <h2>Project:</h2>
 F:\git-depot\TemperatureMeasuringGun\Project\STM32_TempGun_Pro.uvprojx
-Project File Date:  04/28/2020
+Project File Date:  05/04/2020
 
 <h2>Output:</h2>
 Build target 'STM32_TempGun_Pro'
+compiling main.c...
+compiling stm32f1xx_it.c...
+compiling Usart_Driver.c...
 compiling Oled_Driver.c...
+compiling Voltage_Driver.c...
+..\User\Src\Voltage_Driver.c(16): warning:  #550-D: variable "tErrCode" was set but never used
+        HAL_StatusTypeDef  tErrCode;
+..\User\Src\Voltage_Driver.c(52): warning:  #177-D: function "DMA_ADC_TransferCplt" was declared but never referenced
+  static void DMA_ADC_TransferCplt(DMA_HandleTypeDef * _hdma)
+..\User\Src\Voltage_Driver.c(124): warning:  #177-D: function "Voltage_ADC_NVIC_Config" was declared but never referenced
+  static void Voltage_ADC_NVIC_Config(void)
+..\User\Src\Voltage_Driver.c: 3 warnings, 0 errors
+compiling i2c_driver.c...
 linking...
 Program Size: Code=18288 RO-data=2364 RW-data=1116 ZI-data=1380  
 FromELF: creating hex file...
-".\Objects\STM32_TempGun_Pro.axf" - 0 Error(s), 0 Warning(s).
+".\Objects\STM32_TempGun_Pro.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   F:\git-depot\TemperatureMeasuringGun\Project\RTE
