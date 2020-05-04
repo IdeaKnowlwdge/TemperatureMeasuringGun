@@ -55,6 +55,7 @@
 ".\objects\oled_driver.o"
 ".\objects\voltage_driver.o"
 ".\objects\mlx90614_driver.o"
+".\objects\i2c_driver.o"
 --library_type=microlib --strict --scatter ".\Objects\STM32_TempGun_Pro.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

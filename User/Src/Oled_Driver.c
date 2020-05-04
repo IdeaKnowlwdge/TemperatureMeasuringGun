@@ -2,7 +2,12 @@
 #include "stdlib.h"
 #include "oledfont.h"  	 
 #include "SysTick_Driver.h"
+#include "i2c_driver.h"
 
+
+#ifdef DEVICE_I2C
+extern i2c_device i2c_oled_dev1;
+#endif
 
 //              GND   电源地
 //              VCC   接5V或3.3v电源
@@ -14,11 +19,15 @@
 **********************************************/
 void IIC_Start(void)
 {
-
+#ifndef DEVICE_I2C
 	OLED_SCLK_Set() ;
 	OLED_SDIN_Set();
 	OLED_SDIN_Clr();
 	OLED_SCLK_Clr();
+#else
+	
+	I2C_Start(i2c_oled_dev1.sof_i2c);
+#endif
 }
 
 /**********************************************
@@ -26,17 +35,23 @@ void IIC_Start(void)
 **********************************************/
 void IIC_Stop(void)
 {
+#ifndef DEVICE_I2C	
 	OLED_SCLK_Set() ;
 	OLED_SDIN_Clr();
 	OLED_SDIN_Set();
-	
+#else
+	I2C_Stop(i2c_oled_dev1.sof_i2c);
+#endif	
 }
 
 void IIC_Wait_Ack(void)
 {
-
+#ifndef DEVICE_I2C	
 	OLED_SCLK_Set() ;
 	OLED_SCLK_Clr();
+#else
+
+#endif	
 }
 
 
@@ -46,6 +61,7 @@ void IIC_Wait_Ack(void)
 
 void Write_IIC_Byte(unsigned char IIC_Byte)
 {
+	
 	unsigned char i;
 	unsigned char m,da;
 	da=IIC_Byte;
@@ -69,41 +85,62 @@ void Write_IIC_Byte(unsigned char IIC_Byte)
 // IIC Write Command
 **********************************************/
 void Write_IIC_Command(unsigned char IIC_Command)
-{
-   IIC_Start();
-   Write_IIC_Byte(0x78);            //Slave address,SA0=0
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(0x00);			//write command
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(IIC_Command); 
-	IIC_Wait_Ack();	
-   IIC_Stop();
+{	
+#ifndef 	DEVICE_I2C
+		IIC_Start();
+		Write_IIC_Byte(0x78);            //Slave address,SA0=0
+		IIC_Wait_Ack();	
+		Write_IIC_Byte(0x00);			//write command
+		IIC_Wait_Ack();	
+		Write_IIC_Byte(IIC_Command); 
+		IIC_Wait_Ack();	
+		IIC_Stop();
+#else
+		I2C_Start(i2c_oled_dev1.sof_i2c);
+		I2C_SendByte(i2c_oled_dev1.sof_i2c, 0x78);
+		I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+		I2C_SendByte(i2c_oled_dev1.sof_i2c, 0x00);
+		I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+		I2C_SendByte(i2c_oled_dev1.sof_i2c, IIC_Command);
+		I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+		I2C_Stop(i2c_oled_dev1.sof_i2c);
+#endif		
 }
+
 /**********************************************
 // IIC Write Data
 **********************************************/
 void Write_IIC_Data(unsigned char IIC_Data)
 {
-   IIC_Start();
-   Write_IIC_Byte(0x78);			//D/C#=0; R/W#=0
+#ifndef 	DEVICE_I2C
+	IIC_Start();
+	Write_IIC_Byte(0x78);			//D/C#=0; R/W#=0
 	IIC_Wait_Ack();	
-   Write_IIC_Byte(0x40);			//write data
+	Write_IIC_Byte(0x40);			//write data
 	IIC_Wait_Ack();	
-   Write_IIC_Byte(IIC_Data);
+	Write_IIC_Byte(IIC_Data);
 	IIC_Wait_Ack();	
-   IIC_Stop();
+	IIC_Stop();
+#else
+	I2C_Start(i2c_oled_dev1.sof_i2c);
+	I2C_SendByte(i2c_oled_dev1.sof_i2c, 0x78);
+	I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+	I2C_SendByte(i2c_oled_dev1.sof_i2c, 0x40);
+	I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+	I2C_SendByte(i2c_oled_dev1.sof_i2c, IIC_Data);
+	I2C_RecvACK(i2c_oled_dev1.sof_i2c);
+	I2C_Stop(i2c_oled_dev1.sof_i2c);
+#endif		
 }
 void OLED_WR_Byte(unsigned dat,unsigned cmd)
 {
 	if(cmd)
-			{
-
-   Write_IIC_Data(dat);
-   
-		}
-	else {
-   Write_IIC_Command(dat);
-		
+	{
+		Write_IIC_Data(dat);		
+	}
+	else 
+	{
+		Write_IIC_Command(dat);	
 	}
 
 
