@@ -36,30 +36,33 @@ uint8_t TempCompany[][16]=
 int main(void)
 {
 	uint8_t i,j;
-	
-	 en_key_type_t keyType;    //按键类型变量
-	 float Temperature = 0;    //温度数据变量（浮点型）
-	 char TempValue[80] = {0}; //温度值（字符串）
-	 char VoltageValueStr[80] = {0}; //电压值（字符串）
-	 uint32_t TempCleanScreenFlag = 0;  //温度清屏的标志
-	 uint32_t VolCleanScreenFlag = 0;  //电压清屏的标志
-	 uint8_t CollectionFlag = 0;  //采集数据的标志
-	 float VoltageValue = 0.0;     //Vsimple电压值变量
-	 float VBAT = 0.0;            //锂电池电压的变量值
-	 
-	 HAL_Init();      
-   SystemClock_Config();    // 系统时钟初始化成72 MHz 
-	 NVIC_Configuration();    //中断组别的选择
-	 Led_Init();              //初始化RGB灯
-	 SysTick_Init();          //SYSTick的初始化
-	 USARTx_IintConfig();     //串口1的初始化
-	 Key_Init();              //按键初始化
-	 Beep_Init();             //蜂鸣器初始化
-	 OLED_Init();			          //初始化OLED显示屏
-   Voltage_Init();          //电压采集初始化
-	 SMBus_Init();             //初始化
-	
-//	//启动无操作界面	
+
+	en_key_type_t keyType;    //按键类型变量
+	float Temperature = 0;    //温度数据变量（浮点型）
+	char TempValue[80] = {0}; //温度值（字符串）
+	char VoltageValueStr[80] = {0}; //电压值（字符串）
+	uint32_t TempCleanScreenFlag = 0;  //温度清屏的标志
+	uint32_t VolCleanScreenFlag = 0;  //电压清屏的标志
+	uint8_t CollectionFlag = 0;  //采集数据的标志
+	float VoltageValue = 0.0;     //Vsimple电压值变量
+	float VBAT = 0.0;            //锂电池电压的变量值
+
+	HAL_Init();      
+	SystemClock_Config();    // 系统时钟初始化成72 MHz 
+	NVIC_Configuration();    //中断组别的选择
+	Led_Init();              //初始化RGB灯
+	SysTick_Init();          //SYSTick的初始化
+	USARTx_IintConfig();     //串口1的初始化
+	printf("hello world!!\n");
+	Key_Init();              //按键初始化
+	Beep_Init();             //蜂鸣器初始化
+	Sof_I2C_Init();
+	power_pin_ctl();
+	OLED_Init();			          //初始化OLED显示屏
+	Voltage_Init();          //电压采集初始化
+	SMBus_Init();             //初始化
+
+	//启动无操作界面	
 	OLED_DrawBMP(0,0,128,8,Peacock);
 	  
 	while(1)

@@ -5,7 +5,7 @@
 #include "stm32f1xx.h"
 #include "main.h"
 #include "stdlib.h"	 
-
+#include "i2c_driver.h"
 
 #define OLED_MODE 0
 #define SIZE 8
@@ -60,13 +60,11 @@ void Delay_1ms(unsigned int Del_1ms);
 void fill_picture(unsigned char fill_Data);
 void Picture(void);
 void OLED_ShowCHinese16x16(uint8_t x,uint8_t y,uint8_t num,uint8_t (*buf)[16]);
-void IIC_Start(void);
-void IIC_Stop(void);
-void Write_IIC_Command(unsigned char IIC_Command);
-void Write_IIC_Data(unsigned char IIC_Data);
+
+void Write_IIC_Command(i2c_device* dev,unsigned char IIC_Command);
+void Write_IIC_Data(i2c_device* dev,unsigned char IIC_Data);
 void Write_IIC_Byte(unsigned char IIC_Byte);
 
-void IIC_Wait_Ack(void);
 void OLED_DataClear(void) ;
 #endif  
 

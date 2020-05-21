@@ -9,7 +9,7 @@
 #include "oled.h"
 #include "Voltage_Driver.h"
 #include "MLX90614_Driver.h"
-
+#include "pwr_ctl.h"
 
 #endif /* __INCLUDE_H */
 

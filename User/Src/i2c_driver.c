@@ -34,7 +34,7 @@ uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
 void i2c_delay_us(int us)
 {
-	delay_us(us);
+	delay_us(us*2);
 }
 
 #define SOF_GPIO_I2C1_BUS_SDA_CLK() __HAL_RCC_GPIOB_CLK_ENABLE()
@@ -249,6 +249,12 @@ uint8_t I2C_CheckDevice(Sof_i2c_TypeDef* Sof_i2c_inode,uint8_t _Address)
 void Sof_I2C_Init(void)
 {
 	I2C_GPIOInitConfig(&sof_i2c1);
+	
+	if(I2C_CheckDevice(&sof_i2c1,0x78))
+	{
+		printf("sof_i2c1 error!\n");
+	}
+	else printf("sof_i2c1 bus OK!\n");
 }
 
 /******************************************************************

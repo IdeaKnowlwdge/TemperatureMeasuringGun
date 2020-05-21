@@ -2,112 +2,87 @@
 #include "stdlib.h"
 #include "oledfont.h"  	 
 #include "SysTick_Driver.h"
+#include "i2c_driver.h"
 
 
-//              GND   电源地
-//              VCC   接5V或3.3v电源
-//              SCL   接PD6（SCL）
-//              SDA   接PD7（SDA）            
- 
-/**********************************************
-//IIC Start
-**********************************************/
-void IIC_Start(void)
-{
-
-	OLED_SCLK_Set() ;
-	OLED_SDIN_Set();
-	OLED_SDIN_Clr();
-	OLED_SCLK_Clr();
-}
-
-/**********************************************
-//IIC Stop
-**********************************************/
-void IIC_Stop(void)
-{
-	OLED_SCLK_Set() ;
-	OLED_SDIN_Clr();
-	OLED_SDIN_Set();
-	
-}
-
-void IIC_Wait_Ack(void)
-{
-
-	OLED_SCLK_Set() ;
-	OLED_SCLK_Clr();
-}
+i2c_device OLED_dev = {
+	.sof_i2c = &sof_i2c1,
+	.slave_addr = 0x78,
+};
 
 
-/**********************************************
-// IIC Write byte
-**********************************************/
-
-void Write_IIC_Byte(unsigned char IIC_Byte)
-{
-	unsigned char i;
-	unsigned char m,da;
-	da=IIC_Byte;
-	OLED_SCLK_Clr();
-	for(i=0;i<8;i++)		
-	{
-			m=da;
-		//	OLED_SCLK_Clr();
-		m=m&0x80;
-		if(m==0x80)
-		{OLED_SDIN_Set();}
-		else OLED_SDIN_Clr();
-			da=da<<1;
-		OLED_SCLK_Set();
-		OLED_SCLK_Clr();
-		}
-
-
-}
 /**********************************************
 // IIC Write Command
 **********************************************/
-void Write_IIC_Command(unsigned char IIC_Command)
+void Write_IIC_Command(i2c_device* dev,unsigned char IIC_Command)
 {
-   IIC_Start();
-   Write_IIC_Byte(0x78);            //Slave address,SA0=0
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(0x00);			//write command
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(IIC_Command); 
-	IIC_Wait_Ack();	
-   IIC_Stop();
+	I2C_Start(dev->sof_i2c);
+	
+	I2C_SendByte(dev->sof_i2c,dev->slave_addr|I2C_WR);
+	
+	if (I2C_RecvACK(dev->sof_i2c) == 0)
+	{
+		return;
+	}
+	
+	I2C_SendByte(dev->sof_i2c,0x00);
+
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
+	{
+		return;
+	}
+
+	I2C_SendByte(dev->sof_i2c,IIC_Command);
+
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
+	{
+		return;
+	}
+	I2C_Stop(dev->sof_i2c);
 }
 /**********************************************
 // IIC Write Data
 **********************************************/
-void Write_IIC_Data(unsigned char IIC_Data)
+void Write_IIC_Data(i2c_device* dev,unsigned char IIC_Data)
 {
-   IIC_Start();
-   Write_IIC_Byte(0x78);			//D/C#=0; R/W#=0
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(0x40);			//write data
-	IIC_Wait_Ack();	
-   Write_IIC_Byte(IIC_Data);
-	IIC_Wait_Ack();	
-   IIC_Stop();
+	I2C_Start(dev->sof_i2c);
+	
+	I2C_SendByte(dev->sof_i2c,dev->slave_addr|I2C_WR);
+	
+	if (I2C_RecvACK(dev->sof_i2c) == 0)
+	{
+		return;
+	}
+
+	I2C_SendByte(dev->sof_i2c,0x40);
+
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
+	{
+		return;
+	}
+
+	I2C_SendByte(dev->sof_i2c,IIC_Data);
+
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
+	{
+		return;	
+	}
+	I2C_Stop(dev->sof_i2c);
 }
+
+
 void OLED_WR_Byte(unsigned dat,unsigned cmd)
 {
 	if(cmd)
-			{
-
-   Write_IIC_Data(dat);
-   
-		}
-	else {
-   Write_IIC_Command(dat);
-		
+	{
+		Write_IIC_Data(&OLED_dev,dat);
 	}
-
-
+	else 
+	{
+		Write_IIC_Command(&OLED_dev,dat);
+	}
 }
+
 
 /********************************************
 // fill_Picture
@@ -146,8 +121,7 @@ void Delay_1ms(unsigned int Del_1ms)
 }
 
 //坐标设置
-
-	void OLED_Set_Pos(unsigned char x, unsigned char y) 
+void OLED_Set_Pos(unsigned char x, unsigned char y) 
 { 	OLED_WR_Byte(0xb0+y,OLED_CMD);
 	OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
 	OLED_WR_Byte((x&0x0f),OLED_CMD); 
@@ -324,22 +298,7 @@ void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned 
 //初始化SSD1306					    
 void OLED_Init(void)
 { 	
- 
-    GPIO_InitTypeDef  GPIO_InitStruct;
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();   //开启外设时钟
-														   
-    GPIO_InitStruct.Pin = OLED_SCLK_GPIO_PIN|OLED_SDA_GPIO_PIN; //选择要控制的GPIO引脚
-
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;  //推完输出
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;          //上拉模式
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH; //设置引脚速率为高速 
-    HAL_GPIO_Init(OLED_IIC_GPIO_PORT, &GPIO_InitStruct);	//初始化GPIO
-
-		//空闲电平
-		OLED_SCLK_Set();
-		OLED_SDIN_Set();
-	
+	printf("OLED_Init!\n");
 	delay_ms(200);
 	OLED_WR_Byte(0xAE,OLED_CMD);//关闭显示
 	
@@ -379,32 +338,3 @@ void OLED_Init(void)
 	OLED_WR_Byte(0xaf,OLED_CMD);
 	OLED_Clear();
 }  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
