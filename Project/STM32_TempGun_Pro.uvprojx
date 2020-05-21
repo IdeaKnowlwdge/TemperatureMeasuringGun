@@ -690,6 +690,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\Src\MLX90614_Driver.C</FilePath>
             </File>
+            <File>
+              <FileName>i2c_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\i2c_driver.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
