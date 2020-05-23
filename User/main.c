@@ -57,6 +57,9 @@ int main(void)
 	Key_Init();              //按键初始化
 	Beep_Init();             //蜂鸣器初始化
 	Sof_I2C_Init();
+	power_ctl_register();
+	board_power_ctl(PWR_OLED,PWR_ENABLE);
+	board_power_ctl(PWR_INFRARED,PWR_ENABLE);
 	power_pin_ctl();
 	OLED_Init();			          //初始化OLED显示屏
 	Voltage_Init();          //电压采集初始化
@@ -64,7 +67,7 @@ int main(void)
 
 	//启动无操作界面	
 	OLED_DrawBMP(0,0,128,8,Peacock);
-	  
+	printf("hello world!!\n");
 	while(1)
 	{
 
