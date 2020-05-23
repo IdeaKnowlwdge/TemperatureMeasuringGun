@@ -20,7 +20,7 @@ void Write_IIC_Command(i2c_device* dev,unsigned char IIC_Command)
 	
 	I2C_SendByte(dev->sof_i2c,dev->slave_addr|I2C_WR);
 	
-	if (I2C_RecvACK(dev->sof_i2c) == 0)
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
 	{
 		return;
 	}
@@ -49,24 +49,25 @@ void Write_IIC_Data(i2c_device* dev,unsigned char IIC_Data)
 	
 	I2C_SendByte(dev->sof_i2c,dev->slave_addr|I2C_WR);
 	
-	if (I2C_RecvACK(dev->sof_i2c) == 0)
+	if (I2C_RecvACK(dev->sof_i2c) != 0)
 	{
 		return;
 	}
 
 	I2C_SendByte(dev->sof_i2c,0x40);
-
+	
 	if (I2C_RecvACK(dev->sof_i2c) != 0)
 	{
 		return;
 	}
-
+	
 	I2C_SendByte(dev->sof_i2c,IIC_Data);
-
+	
 	if (I2C_RecvACK(dev->sof_i2c) != 0)
 	{
 		return;	
 	}
+	
 	I2C_Stop(dev->sof_i2c);
 }
 
@@ -300,6 +301,7 @@ void OLED_Init(void)
 { 	
 	printf("OLED_Init!\n");
 	delay_ms(200);
+	
 	OLED_WR_Byte(0xAE,OLED_CMD);//πÿ±’œ‘ æ
 	
 	OLED_WR_Byte(0x40,OLED_CMD);//---set low column address
