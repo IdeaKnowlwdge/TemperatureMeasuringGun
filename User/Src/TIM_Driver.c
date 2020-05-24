@@ -2,7 +2,7 @@
 
 
 
-
+TIM_HandleTypeDef    htim2;
 
 
 /***********************************************************************
@@ -16,22 +16,27 @@
 **********************************************************************/
 void TIM2_Configuration(void)
 {
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	__HAL_RCC_TIM2_CLK_ENABLE();
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);
-	TIM_DeInit(TIM2);
-	TIM_TimeBaseStructure.TIM_Period = 9999;
-	TIM_TimeBaseStructure.TIM_Prescaler = 1999;
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-	TIM_ClearFlag(TIM2, TIM_FLAG_Update);//清中断，以免一启用中断后立即产生中断
+	htim2.Instance = TIM2;
 
-	//TIM_PrescalerConfig(TIM2,1999,TIM_PSCReloadMode_Immediate); 
-	TIM_ARRPreloadConfig(TIM2, DISABLE); 	
-  TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
-		
-  TIM_Cmd(TIM2, ENABLE);	
+	htim2.Init.Period            = 7200 - 1;
+	htim2.Init.Prescaler         = 19;
+	htim2.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	htim2.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	htim2.Init.RepetitionCounter = 0;
+	htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+
+	if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+	{
+		while(1);
+	}
+
+	/*##-2- Start the TIM Base generation in interrupt mode ####################*/
+	if (HAL_TIM_Base_Start_IT(&htim2) != HAL_OK)
+	{
+		while(1);
+	}
 }
 
 
@@ -40,24 +45,16 @@ void TIM2_Configuration(void)
 **************************************************************/
 void TIM2_NVIC_Configuration(void)
 {
-    NVIC_InitTypeDef NVIC_InitStructure; 
-    
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-	
-    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;	  
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;	
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+    HAL_NVIC_SetPriority(TIM2_IRQn, 1, 3);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 }
 
 
 
 void TIM_InitConfig(void)
 {
-	TIM2_Configuration();
 	TIM2_NVIC_Configuration();
-
+	TIM2_Configuration();
 }
 
 

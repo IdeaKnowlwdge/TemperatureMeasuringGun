@@ -43,7 +43,9 @@
 #include "SysTick_Driver.h"
 #include "Usart_Driver.h"
 #include "Voltage_Driver.h"
-
+#include "TIM_Driver.h"
+#include "Data_Structure.h"
+#include "Run_task.h"
 
 extern ADC_HandleTypeDef    ADC_Handle;
 
@@ -194,15 +196,13 @@ void SysTick_Handler(void)
 	
 	
 void	USART1_IRQHandler(void)
-	
 {
-  uint8_t ch=0; 
-  
+	uint8_t ch=0; 
+
 	if(__HAL_UART_GET_FLAG( &UartHandle, UART_FLAG_RXNE ) != RESET)
-	{		
-    ch=( uint16_t)READ_REG(UartHandle.Instance->DR);
-    WRITE_REG(UartHandle.Instance->DR,ch); 
- 
+	{
+		ch=( uint16_t)READ_REG(UartHandle.Instance->DR);
+		WRITE_REG(UartHandle.Instance->DR,ch); 
 	}
 }
 	
@@ -213,9 +213,31 @@ void	USART1_IRQHandler(void)
   */
 void ADC1_IRQHandler(void)
 {
-  HAL_ADC_IRQHandler(&ADC_Handle);
+	HAL_ADC_IRQHandler(&ADC_Handle);
 }
 
+void TIM2_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&htim2);
+}
+
+int time_out_flag = 0;
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if(htim->Instance == TIM2)
+	{
+		time_out_flag++;
+		if((time_out_flag%100) == 0)
+		{
+			put_msg_Fifo(MSG_200MS);
+		}
+		
+		if((time_out_flag%250) == 0)
+		{
+			put_msg_Fifo(MSG_HALF_SECOND);
+		}
+	}
+}
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
