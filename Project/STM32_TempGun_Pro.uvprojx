@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F1xx_HAL_Driver\Inc;..\User;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device\ST\STM32F1xx\Include;..\User\inc</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F1xx_HAL_Driver\Inc;..\User;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device\ST\STM32F1xx\Include;..\User\inc;..\User\Src\Data_Structure;..\User\Src\Data_Structure\SeqQueue;..\User\Src\Data_Structure\pipe</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -613,12 +613,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Doc</GroupName>
+          <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Doc\readme.txt</FilePath>
+              <FileName>system_stm32f1xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\system_stm32f1xx.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -638,12 +638,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>CMSIS</GroupName>
+          <GroupName>DataStructure</GroupName>
           <Files>
             <File>
-              <FileName>system_stm32f1xx.c</FileName>
+              <FileName>Data_Structure.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\system_stm32f1xx.c</FilePath>
+              <FilePath>..\User\Src\Data_Structure\Data_Structure.c</FilePath>
+            </File>
+            <File>
+              <FileName>SeqList.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Data_Structure\SeqQueue\SeqList.c</FilePath>
+            </File>
+            <File>
+              <FileName>SeqQueue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Data_Structure\SeqQueue\SeqQueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>pipe.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Data_Structure\pipe\pipe.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -699,6 +714,16 @@
               <FileName>pwr_ctl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Src\pwr_ctl.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Doc</GroupName>
+          <Files>
+            <File>
+              <FileName>readme.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Doc\readme.txt</FilePath>
             </File>
           </Files>
         </Group>
