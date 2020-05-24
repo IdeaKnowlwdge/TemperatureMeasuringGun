@@ -1,7 +1,7 @@
 #ifndef _PIPE_H
 #define _PIPE_H
 
-#include "stm32f10x.h"
+#include "stm32f1xx.h"
 #include <stdbool.h>
 
 typedef struct _Pipe_t {

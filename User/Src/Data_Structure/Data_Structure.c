@@ -17,7 +17,7 @@ SeqQueue* queue_node_Fifo;
 ***********************************************/
 void SeqQueue_Init(void)
 {
-	queue_node_Fifo = (u8*)SeqQueue_Create();
+	queue_node_Fifo = (uint8_t*)SeqQueue_Create();
 }
 
 
@@ -34,7 +34,7 @@ void put_msg_Fifo(uint8_t mode)
 **函数功能	:读取模式消息
 *************************************************************/
 
-u8 get_msg_Fifo(void)
+uint8_t get_msg_Fifo(void)
 {
 	iBox_work_mode = SeqQueue_Header(queue_node_Fifo);
 
@@ -50,9 +50,9 @@ u8 get_msg_Fifo(void)
 **函数功能	:获取消息队列中是否有消息
 **返回	值	:0----无消息
 *************************************************************/
-u8 get_SeqQ_msg_Length(void)
+uint8_t get_SeqQ_msg_Length(void)
 {
-	u8 ret = (u8)SeqQueue_Length(queue_node_Fifo);
+	uint8_t ret = (uint8_t)SeqQueue_Length(queue_node_Fifo);
 	return ret;
 }
 
@@ -61,9 +61,9 @@ u8 get_SeqQ_msg_Length(void)
 **函数功能	:获取消息队列的容量
 **返回	值	:0----无消息
 *************************************************************/
-u8 get_SeqQ_msg_Capacity(void)
+uint8_t get_SeqQ_msg_Capacity(void)
 {
-	u8 ret = (u8)SeqQueue_Capacity(queue_node_Fifo);
+	uint8_t ret = (uint8_t)SeqQueue_Capacity(queue_node_Fifo);
 	return ret;
 }
 
