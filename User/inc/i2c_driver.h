@@ -34,6 +34,9 @@ struct sof_i2c_fops
 
 typedef struct __arg_Sof_i2c_TypeDef
 {
+#define MS_DELAY_ENABLE	1
+#define US_DELAY_ENABLE	2
+	uint8_t delay_type;
 	struct Sof_i2c_Init port;	//描述端口的结构对象
 	uint32_t sda;	//数据线
 	uint32_t scl;	//时钟线
@@ -49,6 +52,7 @@ typedef struct __arg_i2c_device{
 
 
 extern Sof_i2c_TypeDef sof_i2c1;
+extern Sof_i2c_TypeDef sof_i2c2;
 
 
 void I2C_GPIOInitConfig(Sof_i2c_TypeDef* Sof_i2c_inode);
