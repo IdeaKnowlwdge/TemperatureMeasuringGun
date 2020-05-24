@@ -631,6 +631,11 @@
               <FilePath>..\User\main.c</FilePath>
             </File>
             <File>
+              <FileName>Run_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\Run_task.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f1xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\stm32f1xx_it.c</FilePath>
@@ -714,6 +719,11 @@
               <FileName>pwr_ctl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Src\pwr_ctl.c</FilePath>
+            </File>
+            <File>
+              <FileName>TIM_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\TIM_Driver.c</FilePath>
             </File>
           </Files>
         </Group>
