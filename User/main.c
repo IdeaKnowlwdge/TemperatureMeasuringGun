@@ -28,6 +28,25 @@ uint8_t TempCompany[][16]=
 
 };
 
+void Board_Init(void)
+{
+	HAL_Init();
+	SystemClock_Config();    // 系统时钟初始化成72 MHz 
+	NVIC_Configuration();    //中断组别的选择
+	SysTick_Init();          //SYSTick的初始化
+	Led_Init();              //初始化RGB灯
+	USARTx_IintConfig();     //串口1的初始化
+	printf("hello world!!\n");
+	Key_Init();              //按键初始化
+	Beep_Init();             //蜂鸣器初始化
+	Sof_I2C_Init();
+	power_ctl_register();
+	board_power_ctl(PWR_OLED,PWR_ENABLE);
+	board_power_ctl(PWR_INFRARED,PWR_ENABLE);
+	OLED_Init();			 //初始化OLED显示屏
+	Voltage_Init();          //电压采集初始化
+}
+
 /**
   * @brief  主函数
   * @param  无
@@ -47,24 +66,8 @@ int main(void)
 	float VoltageValue = 0.0;     //Vsimple电压值变量
 	float VBAT = 0.0;            //锂电池电压的变量值
 
-	HAL_Init();      
-	SystemClock_Config();    // 系统时钟初始化成72 MHz 
-	NVIC_Configuration();    //中断组别的选择
-	Led_Init();              //初始化RGB灯
-	SysTick_Init();          //SYSTick的初始化
-	USARTx_IintConfig();     //串口1的初始化
-	printf("hello world!!\n");
-	Key_Init();              //按键初始化
-	Beep_Init();             //蜂鸣器初始化
-	Sof_I2C_Init();
-	power_ctl_register();
-	board_power_ctl(PWR_OLED,PWR_ENABLE);
-	board_power_ctl(PWR_INFRARED,PWR_ENABLE);
-	power_pin_ctl();
-	OLED_Init();			          //初始化OLED显示屏
-	Voltage_Init();          //电压采集初始化
-	SMBus_Init();             //初始化
-
+	Board_Init();
+	
 	//启动无操作界面	
 	OLED_DrawBMP(0,0,128,8,Peacock);
 	printf("hello world!!\n");
@@ -98,7 +101,8 @@ int main(void)
 									OLED_ShowCHinese16x16(i*16,2,j,TempCompany);			
 								}
 							
-								Temperature = SMBus_ReadTemp();  //读取温度  	
+//								Temperature = SMBus_ReadTemp();  //读取温度 
+								Temperature = infrared_ReadTemp();
 								sprintf(TempValue,"%.1f", Temperature);     //浮点型转换成字符串
 								OLED_ShowString(40,2,(uint8_t *)TempValue,16);   //显示温度
 								
