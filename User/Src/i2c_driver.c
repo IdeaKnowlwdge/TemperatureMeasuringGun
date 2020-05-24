@@ -1,4 +1,4 @@
-/*********************************OWL-IOT32*********************************                                      
+/*********************************OWL Micro F1*********************************                                      
  
 	                         \\\|///
                        \\  - -  //
@@ -31,16 +31,36 @@ uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 {
 	return HAL_GPIO_ReadPin(GPIOx, GPIO_Pin);
 }
-
-void i2c_delay_us(int us)
+/*******************************************************************************
+* Function Name  : i2c_delay
+* Description    : 延时  一次循环约1us
+* Input          : time
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void i2c_delay(uint16_t time)
 {
-	delay_us(us*2);
+    uint16_t i, j;
+    for (i=0; i<4; i++)
+    {
+        for (j=0; j<time; j++);
+    }
+}
+
+void i2c_delay_us(uint32_t nus)	//微秒延时
+{
+	i2c_delay(nus);
+//	delay_us(us*2);
 }
 
 #define SOF_GPIO_I2C1_BUS_SDA_CLK() __HAL_RCC_GPIOB_CLK_ENABLE()
 #define SOF_GPIO_I2C1_BUS_SCL_CLK() __HAL_RCC_GPIOB_CLK_ENABLE()
 
+#define SOF_GPIO_I2C2_BUS_SDA_CLK() __HAL_RCC_GPIOB_CLK_ENABLE()
+#define SOF_GPIO_I2C2_BUS_SCL_CLK() __HAL_RCC_GPIOB_CLK_ENABLE()
+
 Sof_i2c_TypeDef sof_i2c1 = {
+	.delay_type = 0,
 	.port = {
 		.SDA_GPIOx = GPIOB,
 		.SCL_GPIOx = GPIOB,
@@ -54,7 +74,21 @@ Sof_i2c_TypeDef sof_i2c1 = {
 	},
 };
 
-
+Sof_i2c_TypeDef sof_i2c2 = {
+	.delay_type = US_DELAY_ENABLE,
+	.port = {
+		.SDA_GPIOx = GPIOB,
+		.SCL_GPIOx = GPIOB,
+	},
+	.sda = GPIO_PIN_11,
+	.scl = GPIO_PIN_10,
+	.fops = {
+		.gpio_set = GPIO_SetBits,
+		.gpio_reset = GPIO_ResetBits,
+		.gpio_read_bit = GPIO_ReadInputDataBit,
+		.delay_us = i2c_delay_us,
+	},
+};
 
 void I2C_GPIOInitConfig(Sof_i2c_TypeDef* Sof_i2c_inode)
 {
@@ -62,16 +96,18 @@ void I2C_GPIOInitConfig(Sof_i2c_TypeDef* Sof_i2c_inode)
 	
     SOF_GPIO_I2C1_BUS_SDA_CLK();
 	SOF_GPIO_I2C1_BUS_SCL_CLK();
+	SOF_GPIO_I2C2_BUS_SDA_CLK();
+	SOF_GPIO_I2C2_BUS_SCL_CLK();
 													   
     GPIO_InitStruct.Pin = Sof_i2c_inode->sda;	
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;  
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(Sof_i2c_inode->port.SDA_GPIOx, &GPIO_InitStruct);	
 	
 	GPIO_InitStruct.Pin = Sof_i2c_inode->scl;	
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;  
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(Sof_i2c_inode->port.SDA_GPIOx, &GPIO_InitStruct);	
 
@@ -111,9 +147,13 @@ void I2C_Start(Sof_i2c_TypeDef* Sof_i2c_inode)
 	SDA_OUT(Sof_i2c_inode);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-    i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 	Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
-    i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 	Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
 }
 
@@ -124,9 +164,13 @@ void I2C_Stop(Sof_i2c_TypeDef* Sof_i2c_inode)
 	SDA_OUT(Sof_i2c_inode);
 	Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-	i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
     Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
-    i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 }
 
 /**************************************
@@ -135,14 +179,20 @@ void I2C_SendACK(Sof_i2c_TypeDef* Sof_i2c_inode,uint8_t ack)
 {
 	SDA_OUT(Sof_i2c_inode);
 	Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-	i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 	if(ack)
 		Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 	else Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-	i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 	Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-	i2c_delay_us(8);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(8);
 }
 
 /**************************************
@@ -154,9 +204,13 @@ uint8_t I2C_RecvACK(Sof_i2c_TypeDef* Sof_i2c_inode)
 
  	SDA_IN(Sof_i2c_inode);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
-	i2c_delay_us(4);	   
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(4);
 	Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-	i2c_delay_us(4);
+
+	if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+		Sof_i2c_inode->fops.delay_us(4);
 	
 	value = Sof_i2c_inode->fops.gpio_read_bit(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 	while(value)
@@ -187,11 +241,17 @@ void I2C_SendByte(Sof_i2c_TypeDef* Sof_i2c_inode,uint8_t dat)
 			Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 		else Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
         dat<<=1; 	  
-		i2c_delay_us(5);
+
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(5);
 		Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-		i2c_delay_us(5); 
+
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(5);
 		Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-		i2c_delay_us(5);
+
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(8);
     }
 }
 
@@ -207,9 +267,12 @@ uint8_t I2C_RecvByte(Sof_i2c_TypeDef* Sof_i2c_inode)
 	SDA_IN(Sof_i2c_inode);
 	for(i = 0;i < 8;i++)
 	{
-		i2c_delay_us(5);
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(5);
 		Sof_i2c_inode->fops.gpio_set(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-		i2c_delay_us(5);
+
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(5);
 		byte <<= 1;
 		value = Sof_i2c_inode->fops.gpio_read_bit(Sof_i2c_inode->port.SDA_GPIOx,Sof_i2c_inode->sda);
 		if(value)
@@ -217,7 +280,9 @@ uint8_t I2C_RecvByte(Sof_i2c_TypeDef* Sof_i2c_inode)
 			byte |= 0x01;
 		}
 		Sof_i2c_inode->fops.gpio_reset(Sof_i2c_inode->port.SCL_GPIOx,Sof_i2c_inode->scl);
-		i2c_delay_us(5);
+
+		if(Sof_i2c_inode->delay_type == US_DELAY_ENABLE)
+			Sof_i2c_inode->fops.delay_us(5);
 	}
 	return byte;
 }
@@ -255,6 +320,14 @@ void Sof_I2C_Init(void)
 		printf("sof_i2c1 error!\n");
 	}
 	else printf("sof_i2c1 bus OK!\n");
+	
+	I2C_GPIOInitConfig(&sof_i2c2);
+	
+	if(I2C_CheckDevice(&sof_i2c2,0x00))
+	{
+		printf("sof_i2c2 error!\n");
+	}
+	else printf("sof_i2c2 bus OK!\n");
 }
 
 /******************************************************************
