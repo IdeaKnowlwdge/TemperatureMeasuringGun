@@ -46,6 +46,7 @@
 #include "TIM_Driver.h"
 #include "Data_Structure.h"
 #include "Run_task.h"
+#include "Key_Driver.h"
 
 extern ADC_HandleTypeDef    ADC_Handle;
 
@@ -195,7 +196,7 @@ void SysTick_Handler(void)
 	
 	
 	
-void	USART1_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
 	uint8_t ch=0; 
 
@@ -226,6 +227,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim->Instance == TIM2)
 	{
+		board_keyScan();
+		
 		time_out_flag++;
 		if((time_out_flag%100) == 0)
 		{
