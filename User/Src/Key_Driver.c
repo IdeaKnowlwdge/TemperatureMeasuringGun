@@ -153,7 +153,7 @@ void board_keyScan(void)
 			key_val = 0;
 		}
 		else if(KEY_LONG_CNT <= key_loop_counter)
-		{Usart_SendString("W ");
+		{
 			key_val = 3;
 		}
 		key_long_flag = 0;
@@ -189,11 +189,9 @@ void board_keyScan(void)
 		
 		if (msg_key == NO_MSG)
 			goto _exit_keyScan;
-		Usart_SendString("H ");
-//		Clear_msg_Fifo();
+		
 		put_msg_Fifo(msg_key);
 		msg_key = NO_MSG;
-//		iokey_value = 0x0f;
 	}
 	
 _exit_keyScan:

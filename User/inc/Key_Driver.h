@@ -84,18 +84,10 @@ struct iokey_type{
 	uint32_t keyval;
 };
 
-
-typedef enum en_key_type
-{
-	EN_KEY_TYPE_MENU = 0,
-	EN_KEY_TYPE_UP,
-	EN_KEY_TYPE_DOWN,
-	EN_KEY_TYPE_LEFT,
-	EN_KEY_TYPE_RIGHT,
-	EN_KEY_TYPE_NONE,
-
-} en_key_type_t, *pen_key_type_t;
-
+#define MSG_KEY_TYPE_UP			MSG_IOKEY1_HOLD		//连按测温
+#define MSG_KEY_TYPE_DOWN		MSG_IOKEY4_SHORT	//短按测压
+#define MSG_KEY_TYPE_LEFT		MSG_IOKEY3_SHORT	//短按退出
+#define MSG_KEY_TYPE_RIGHT		MSG_IOKEY2_SHORT	//短按进入测量模式
 
 void Key_Init(void);
 void board_keyScan(void);
