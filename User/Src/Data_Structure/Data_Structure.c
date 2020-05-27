@@ -33,7 +33,7 @@ void put_msg_Fifo(uint8_t mode)
 /************************************************************
 **函数功能	:读取模式消息
 *************************************************************/
-
+#if 0
 uint8_t get_msg_Fifo(void)
 {
 	iBox_work_mode = SeqQueue_Header(queue_node_Fifo);
@@ -43,6 +43,15 @@ uint8_t get_msg_Fifo(void)
 		
 	return iBox_work_mode;
 }
+#else
+uint8_t get_msg_Fifo(void)
+{
+	if(SeqQueue_Length(queue_node_Fifo) == 0)
+		return 0xff;
+		
+	return SeqQueue_Retrieve(queue_node_Fifo);
+}
+#endif
 
 
 
