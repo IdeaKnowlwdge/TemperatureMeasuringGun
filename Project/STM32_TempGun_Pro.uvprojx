@@ -725,6 +725,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\Src\TIM_Driver.c</FilePath>
             </File>
+            <File>
+              <FileName>ST_string.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\ST_string.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
