@@ -17,6 +17,7 @@ typedef enum
 	MSG_8,
 	MSG_9,
 
+	MSG_60MS,
 	MSG_100MS,
 	MSG_200MS,
 	MSG_HALF_SECOND,

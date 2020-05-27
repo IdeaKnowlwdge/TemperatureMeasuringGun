@@ -18,16 +18,9 @@
 
 #include "include.h"
 #include <stdio.h>
-#include "bmp.h"
+//#include "bmp.h"
 #include "Run_task.h"
 
-//温度的单位 ℃
-uint8_t TempCompany[][16]=
-{
-	0x06,0x09,0x09,0xE6,0xF8,0x0C,0x04,0x02,0x02,0x02,0x02,0x02,0x04,0x1E,0x00,0x00,
-	0x00,0x00,0x00,0x07,0x1F,0x30,0x20,0x40,0x40,0x40,0x40,0x40,0x20,0x10,0x00,0x00,/*"℃",0*/
-
-};
 
 void Board_Init(void)
 {
@@ -49,7 +42,7 @@ void Board_Init(void)
 //	SystemClock_Config();
 	TIM_InitConfig();
 	
-	OLED_DrawBMP(0,0,128,8,Peacock);
+//	OLED_DrawBMP(0,0,128,8,Peacock);
 }
 
 /**
@@ -57,213 +50,11 @@ void Board_Init(void)
   * @param  无
   * @retval 无
   */
-#if 1
 int main(void)
 {
 	Board_Init();
 	Run_Start();
 }
-#else
-int main(void)
-{
-	uint8_t i,j;
-
-	en_key_type_t keyType;    //按键类型变量
-	float Temperature = 0;    //温度数据变量（浮点型）
-	char TempValue[80] = {0}; //温度值（字符串）
-	char VoltageValueStr[80] = {0}; //电压值（字符串）
-	uint32_t TempCleanScreenFlag = 0;  //温度清屏的标志
-	uint32_t VolCleanScreenFlag = 0;  //电压清屏的标志
-	uint8_t CollectionFlag = 0;  //采集数据的标志
-	float VoltageValue = 0.0;     //Vsimple电压值变量
-	float VBAT = 0.0;            //锂电池电压的变量值
-
-	Board_Init();
-	
-	//启动无操作界面	
-	OLED_DrawBMP(0,0,128,8,Peacock);
-	printf("hello world!!\n");
-	while(1)
-	{
-
-		if(Key_IsAnyButtonPress(&keyType) == KEY_ON)    //按键扫描
-		{
-		
-			switch((uint8_t)keyType)
-			{
-				
-				//上按键:  实现测温功能，采集MLX90614的数据，并在显示屏显示
-				case EN_KEY_TYPE_UP:            //上按键
-					
-							if(CollectionFlag != 0)
-							{
-								
-								//进入该模式，只清一次屏
-								if(TempCleanScreenFlag == 0)
-								{
-									OLED_DataClear() ;
-									
-									TempCleanScreenFlag++;
-								}
-								
-								//温度单位显示 （℃）
-								for(i = 5;i < 6;i++)
-								{
-									j = i - 5;
-									OLED_ShowCHinese16x16(i*16,2,j,TempCompany);			
-								}
-							
-//								Temperature = SMBus_ReadTemp();  //读取温度 
-								Temperature = infrared_ReadTemp();
-								sprintf(TempValue,"%.1f", Temperature);     //浮点型转换成字符串
-								OLED_ShowString(40,2,(uint8_t *)TempValue,16);   //显示温度
-								
-								//发热分为： 低热 ：37.2～38℃；中等度热：38．1～39℃：高热：39．1～41℃； 超高热 ：41℃以上
-								//低烧预警
-								if(Temperature >= 37.2 && Temperature <= 38.0)
-								{
-									  //喇叭和红灯预警
-										for(i = 0;i < 5;i++)
-										{
-											Beep_VoiceRegulation(10);
-											 Led_Ctl( Red, ON );
-											delay_ms(500);
-											
-											Beep_VoiceRegulation(0);	
-											Led_Ctl( Red, OFF );
-											delay_ms(500);
-										}
-								}
-								//中烧预警
-								else if(Temperature >= 38.1 && Temperature <= 39.0)
-								{
-										for(i = 0;i < 5;i++)
-										{
-											 Beep_VoiceRegulation(10);
-											 Led_Ctl( Red, ON );
-											 delay_ms(300);
-											 Beep_VoiceRegulation(0);
-											 Led_Ctl( Red, OFF );
-											 delay_ms(300);
-											}
-								}
-							  
-								//高烧预警
-								else if(Temperature >= 39.1 && Temperature <= 41.0)
-								{
-										for(i = 0;i < 5;i++)
-									 {
-												
-											Beep_VoiceRegulation(10);
-											Led_Ctl( Red, ON );
-											delay_ms(80);
-											Beep_VoiceRegulation(0);
-											Led_Ctl( Red, OFF );
-											delay_ms(80);
-										}
-								}
-								//超高烧预警
-								else if(Temperature > 41)
-								{
-											for(i = 0;i < 5;i++)
-											{
-										     Beep_VoiceRegulation(10);
-												 Led_Ctl( Red, ON );
-										     delay_ms(50);
-										     Beep_VoiceRegulation(0);
-												 Led_Ctl( Red, OFF );
-										     delay_ms(50);
-											}
-								}
-								
-								VolCleanScreenFlag = 0; //清除电压清屏的标志
-							}
-
-				break;
-				
-							
-				//下按键:  实现采集电压功能，并在显示屏显示
-				case EN_KEY_TYPE_DOWN:         //下按键
-					
-						if(CollectionFlag != 0)
-						{	
-								//进入该模式，只清一次屏
-								if(VolCleanScreenFlag == 0)
-								{
-									OLED_DataClear() ;      //清除数据行的屏幕信息
-									OLED_ShowChar(80,2,'V',16);
-									VolCleanScreenFlag++;
-									
-								}
-								
-								
-								VoltageValue = Get_VoltageValue();
-								//由于板子在电压采集的电路中加入了电阻，所以在串联电路中，电阻起到的作用是:分压
-								//故，锂电池的电压 VBAT = VoltageValue*（10 K + 10K）/10K
-
-								VBAT = VoltageValue*(10 + 10)/10;
-								
-								sprintf(VoltageValueStr,"%.2f", VBAT);     //浮点型转换成字符串
-								//由于板子在电压采集的电路中加入了电阻所以加1.2V
-								sprintf(VoltageValueStr,"%.2f", (VoltageValue + 1.20));     //浮点型转换成字符串
-								OLED_ShowString(40,2,(uint8_t *)VoltageValueStr,16);   //显示温度
-								
-								//低压预警
-								if(VoltageValue < 1.5)
-								{
-											for(i = 0;i < 5;i++)   //闪烁5次
-											{
-													Beep_VoiceRegulation(10);    //喇叭提示
-												  Led_Ctl( Green, ON );
-													delay_ms(800);               //绿灯
-													Beep_VoiceRegulation(0);
-												  Led_Ctl( Green, OFF );
-													delay_ms(800);
-										 }
-								}
-								
-								TempCleanScreenFlag = 0;    //清除温度显示的标志
-						}
-				break;
-				
-				
-				//左键：进行后退，并显示首界面
-				case EN_KEY_TYPE_LEFT:    
-					
-				  delay_us(10); 
-					OLED_Clear();  //清屏
-					delay_ms(500);   //延时500ms
-					OLED_DrawBMP(0,0,128,8,Peacock);  //显示首界面
-				
-					CollectionFlag = 0;  //采集标志清空
-					TempCleanScreenFlag	 = 0; //清空标志
-				  VolCleanScreenFlag = 0; //清空标志
-						
-				break;
-				
-				
-				//进入选择界面
-				case  EN_KEY_TYPE_RIGHT:
-
-					OLED_Clear();  //清屏
-					delay_ms(500);   //延时500ms
-					OLED_DrawBMP(0,0,128,8,BMP1);  //显示首界面
-						
-				 OLED_ShowString(0,2,"(T):up (V):dowm ",16);   //显示温度
-					
-				 CollectionFlag++;  //采集标志位++
-				 TempCleanScreenFlag	 = 0; //清空标志
-				VolCleanScreenFlag = 0; //清空标志
-				break;
-				
-				default :				
-					  ;			
-			}
-		}
-		
-	}
-}
-#endif
 
 /**
   * @brief  System Clock Configuration

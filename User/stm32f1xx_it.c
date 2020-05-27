@@ -230,6 +230,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		board_keyScan();
 		
 		time_out_flag++;
+		if((time_out_flag%30) == 0)
+		{
+			put_msg_Fifo(MSG_60MS);
+		}
+		
+		if((time_out_flag%50) == 0)
+		{
+			put_msg_Fifo(MSG_100MS);
+		}
+		
 		if((time_out_flag%100) == 0)
 		{
 			put_msg_Fifo(MSG_200MS);
