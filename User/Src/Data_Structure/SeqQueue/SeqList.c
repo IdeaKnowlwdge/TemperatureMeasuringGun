@@ -14,7 +14,7 @@ typedef struct _tag_SeqList
 
 TSeqList Queue_Info;
 
-unsigned char Queue_Info_buf[5] = {0};
+unsigned char Queue_Info_buf[20] = {0};
 
 /*
     该方法用于创建并且返回一个空的线性表
@@ -28,7 +28,7 @@ SeqList* SeqList_Create(void)
 	
 	if( ret != NULL)
 	{
-		ret->capacity = 5;
+		ret->capacity = 20;
 		ret->length = 0;
 		ret->node = Queue_Info_buf;
 	}
@@ -173,9 +173,9 @@ SeqListNode SeqList_Delete(SeqList* list, int pos)
 		}
 		
 		if(sList->length > sList->capacity)
-			sList->node[sList->length-1] = 0xff;
+			sList->node[sList->capacity-1] = 0xff;
 		else
-			sList->node[sList->length] = 0xff;
+			sList->node[sList->length-1] = 0xff;
 			
 		if(sList->length > 0)
 			sList->length--;
