@@ -3,6 +3,8 @@
 #include "include.h"
 #include "bmp.h"
 #include "ST_string.h"
+#include "mrt311_driver.h"
+
 
 //温度的单位 ℃
 uint8_t TempCompany[][16]=
@@ -42,7 +44,6 @@ struct TempMeasuringGun_type{
 static void Run_Task(void)
 {
 	uint8_t msg = NO_MSG;
-	float VoltageValue = 0.0;
 	struct TempMeasuringGun_type board;
 	
 	OWL_BOARD_DEBUG("Run_Task\r\n");
@@ -67,11 +68,24 @@ static void Run_Task(void)
 						OLED_DataClear();
 						board.TempCleanScreenFlag++;
 					}
-					
+					//显示温度的单位
 					OLED_ShowCHinese16x16(5*16,2,0,TempCompany);
 					
-					board.Temperature = infrared_ReadTemp();  //读取温度
+			
+					
+#if IR_MLX90614_SELECT 
+			
+					board.Temperature = infrared_ReadTemp();  //读取温度 MLX90614A
+#else
+					board.Temperature = Get_Tobj_VRange();		//MRT-311热电堆温度传感器采集人体温度			
+#endif
+					if(board.Temperature == TEMP_ERR)
+					{
+						board.Temperature =   Get_NTC_Temp();  //如果没有检测到有人在，则显示环境温度
+					}
+
 					sprintf(board.TempValue,"%.1f", board.Temperature);     //浮点型转换成字符串
+					
 					OLED_ShowString(40,2,(uint8_t *)board.TempValue,16);   //显示温度
 					
 					//发热分为： 
@@ -113,8 +127,7 @@ static void Run_Task(void)
 						board.VolCleanScreenFlag++;
 					}
 					
-					VoltageValue = Get_VoltageValue();//采样电压
-					board.VBAT = VoltageValue*(10 + 10)/10;//锂电池电压
+					board.VBAT = Get_BAT_Vol();	//获取电池电压
 					
 					sprintf(board.VoltageValueStr,"%.2f", board.VBAT);      //浮点型转换成字符串
 					OLED_ShowString(40,2,(uint8_t *)board.VoltageValueStr,16);   //显示温度

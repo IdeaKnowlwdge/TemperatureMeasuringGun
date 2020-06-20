@@ -4,6 +4,12 @@
 
 #include "stm32f1xx.h"
 
+
+//传感器的选择 : 型号为MLX90614A 宏为 1 ,型号为MRT-311宏为 0
+#define IR_MLX90614_SELECT 1    
+#define TEMP_ERR -1
+
+
 typedef enum
 {
 	MSG_0 = 0,

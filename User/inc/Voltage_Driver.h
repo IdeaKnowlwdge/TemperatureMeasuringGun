@@ -3,25 +3,23 @@
 
 #include "stm32f1xx.h"
 
-// ADC GPIO 宏定义
-#define VOLTAGE_ADC_GPIO_PORT              GPIOA
-#define VOLTAGE_ADC_GPIO_PIN               GPIO_PIN_7
-#define VOLTAGE_ADC_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOA_CLK_ENABLE()
-    
-// ADC 序号宏定义
-#define VOLTAGE_ADC                        ADC1
-#define VOLTAGE_ADC_CLK_ENABLE()            __HAL_RCC_ADC1_CLK_ENABLE(); 
-#define VOLTAGE_ADC_CHANNEL                ADC_CHANNEL_7
 
-// ADC 中断宏定义
-#define Voltage_ADC_IRQ                    ADC1_IRQn
-#define Voltage_ADC_INT_FUNCTION           ADC1_IRQHandler
+typedef enum{
+	ADC_IN1,
+	ADC_IN2,
+	ADC_IN3,
+	ADC_IN4,
+	ADC_BAT_VOLTAGE,
+}__OWL_BOARD_ADC_CHANNEL;//GPIO口定义通道ADC通道的命名
 
 
-extern __IO uint32_t ADC_ConvertedValue;
 
-void Voltage_Init(void);
-float Get_VoltageValue(void);
+void ADC_InitConfig(void);
+uint16_t Get_Adc(uint8_t channel);
+float Get_AdcMath(uint16_t adc_val);
+uint32_t Get_AdcMath_uV(uint16_t adc_val);
+float Get_BAT_Vol(void);
+void Adc_test_demo(void);
 
 #endif /* __VOLTAGE_DRIVER_H_ */
 

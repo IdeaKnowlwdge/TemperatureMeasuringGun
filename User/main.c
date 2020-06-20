@@ -30,19 +30,25 @@ void Board_Init(void)
 	SysTick_Init();          //SYSTick的初始化
 	Led_Init();              //初始化RGB灯
 	USARTx_IintConfig();     //串口1的初始化
-	printf("hello world!!\n");
+	
 	Key_Init();              //按键初始化
 	Beep_Init();             //蜂鸣器初始化
 	Sof_I2C_Init();
 	power_ctl_register();
 	board_power_ctl(PWR_OLED,PWR_ENABLE);
-	board_power_ctl(PWR_INFRARED,PWR_ENABLE);
+	board_power_ctl(PWR_INFRARED,PWR_ENABLE);				  //选择MLX90614A温度 
 	OLED_Init();			 //初始化OLED显示屏
-	Voltage_Init();          //电压采集初始化
-//	SystemClock_Config();
+	ADC_InitConfig();          //电压采集初始化
 	TIM_InitConfig();
+
 	
-//	OLED_DrawBMP(0,0,128,8,Peacock);
+#if IR_MLX90614_SELECT 		
+	;
+#else
+	IR_Sensor_Init();
+	IR_Sensor_Enable();		//选择MRT-311热电堆温度传感器采集人体温度			
+#endif	
+	
 }
 
 /**

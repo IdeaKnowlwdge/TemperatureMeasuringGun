@@ -214,7 +214,7 @@ void USART1_IRQHandler(void)
   */
 void ADC1_IRQHandler(void)
 {
-	HAL_ADC_IRQHandler(&ADC_Handle);
+//	HAL_ADC_IRQHandler(&ADC_Handle);
 }
 
 void TIM2_IRQHandler(void)

@@ -11,6 +11,7 @@
 #include "MLX90614_Driver.h"
 #include "pwr_ctl.h"
 #include "TIM_Driver.h"
+#include "mrt311_driver.h"
 
 
 //#define OWL_BOARD_DEBUG(...)

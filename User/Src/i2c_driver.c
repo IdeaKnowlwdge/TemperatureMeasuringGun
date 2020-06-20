@@ -13,6 +13,7 @@
 ***************************************************************************/
 #include "i2c_driver.h"
 #include "SysTick_Driver.h"
+#include "Run_task.h"
 
 
 #ifdef DEVICE_I2C
@@ -321,6 +322,8 @@ void Sof_I2C_Init(void)
 	}
 	else printf("sof_i2c1 bus OK!\n");
 	
+	
+#if IR_MLX90614_SELECT 
 	I2C_GPIOInitConfig(&sof_i2c2);
 	
 	if(I2C_CheckDevice(&sof_i2c2,0x00))
@@ -328,6 +331,9 @@ void Sof_I2C_Init(void)
 		printf("sof_i2c2 error!\n");
 	}
 	else printf("sof_i2c2 bus OK!\n");
+	
+#endif
+	
 }
 
 /******************************************************************

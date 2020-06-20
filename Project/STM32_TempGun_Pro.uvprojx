@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F103C8</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.2.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x10000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -333,7 +333,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
               <IncludePath>..\Libraries\CMSIS;..\Libraries\STM32F1xx_HAL_Driver\Inc;..\User;..\Libraries\CMSIS\Include;..\Libraries\CMSIS\Device\ST\STM32F1xx\Include;..\User\inc;..\User\Src\Data_Structure;..\User\Src\Data_Structure\SeqQueue;..\User\Src\Data_Structure\pipe</IncludePath>
@@ -729,6 +729,16 @@
               <FileName>ST_string.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\Src\ST_string.c</FilePath>
+            </File>
+            <File>
+              <FileName>mrt311_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\mrt311_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtv_table.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Src\rtv_table.c</FilePath>
             </File>
           </Files>
         </Group>
